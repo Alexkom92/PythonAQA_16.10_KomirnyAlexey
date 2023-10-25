@@ -55,9 +55,9 @@ print("Вік в секундах:", age_seconds)
 """
 
 list_of_value = [random.randint(1, 10) for _ in range(100)]
-count = 0
-for item in list_of_value:
-    count += item
-print(count)
+result = {}
+for num in list_of_value:
+    result[num] = result.get(num, 0) + 1
+print(result)
 
 
