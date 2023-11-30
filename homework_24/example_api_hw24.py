@@ -50,3 +50,11 @@ class Phone:
         headers = {"content-type":"application/json"}
         updated_object = json.dumps(changed_dict)
         return requests.put(f'{url}/{object_id}', data=updated_object,headers=headers)
+
+    def patch_an_object(object_id, changed_dict):
+        headers = {"content-type": "application/json"}
+        updated_object = json.dumps(changed_dict)
+        return requests.patch(f'{url}/{object_id}', data=updated_object, headers=headers)
+
+    def del_an_object(object_id):
+        return requests.delete(f'{url}/{object_id}')
