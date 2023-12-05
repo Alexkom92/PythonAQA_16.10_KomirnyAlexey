@@ -1,6 +1,6 @@
 from homework25.reqres_infra_hw25 import UsersWithSession as User
 import pytest
-
+from requests.exceptions import HTTPError
 
 def test_get_list_users():
     session = User()
@@ -48,4 +48,39 @@ def test_update_user(session, new_job):
     assert update_user_response.json()['job'] == new_job
 
 
+def test_login_successful_status():
+    session = User()
+    response = session.mocked_login()
+    assert response.status_code == 200
 
+
+def test_login_successful_token():
+    session = User()
+    response = session.mocked_login()
+    assert response.json()["token"] == "QpwL5tke4Pnpja7X4"
+
+
+def test_login_unsuccessful():
+    session = User()
+    response = session.login_unsuccessful()
+    assert response.status_code == 400
+    assert response.json()["error"] == "Missing password"
+
+
+def test_auth_with_token():
+    session = User()
+    response = session.authorization_with_token()
+    assert response.status_code == 400
+
+
+def test_handle_response_successful(mock_response):
+    session = User()
+    mock_response.status_code = 200
+    session._handle_response(mock_response)
+
+
+def test_handle_response_http_error(mock_response):
+    user_session = User()
+    mock_response.status_code = 404
+    with pytest.raises(HTTPError, match="HTTP error occurred"):
+        user_session._handle_response(mock_response)

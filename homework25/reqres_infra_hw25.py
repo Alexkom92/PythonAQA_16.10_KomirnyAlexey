@@ -1,8 +1,8 @@
 import json
-
+from requests.exceptions import HTTPError
 import requests
 import logging
-from requests.auth import HTTPBasicAuth
+
 
 url = "https://reqres.in/"
 
@@ -14,6 +14,7 @@ class UsersWithSession:
     def __init__(self):
         self.session = requests.Session()
         self.url = url
+        self.token = "QpwL5tke4Pnpja7X4"
         self.logger = logging.getLogger(__name__)
 
     def _handle_response(self, response):
@@ -51,3 +52,23 @@ class UsersWithSession:
         updated_object = json.dumps(changed_dict)
         response = self.session.patch(f'{self.url}api/users/{object_id}', data=updated_object, headers=headers)
         return response
+
+    def mocked_login(self):
+        data = {
+            "email": "eve.holt@reqres.in",
+            "password": "cityslicka"}
+        login_body = self.session.post(url='https://reqres.in/api/login', data=data)
+        return login_body
+
+    def login_unsuccessful(self):
+        data = {
+            "email": "peter@klaven"}
+        login_body = self.session.post(url='https://reqres.in/api/login', data=data)
+        return login_body
+
+    def authorization_with_token(self):
+        headers = {"Authorization": f"Bearer {self.token}"}
+        sucessful_login_body = self.session.post(url='https://reqres.in/api/login', headers=headers)
+        return sucessful_login_body
+
+
